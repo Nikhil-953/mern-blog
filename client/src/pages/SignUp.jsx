@@ -56,12 +56,13 @@ export default function SignUp() {
       <div className="p-6 max-w-4xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between w-full gap-5">
         
         <div className="md:w-1/2 flex-1">
-          <Link to="/" className="font-bold dark:text-white text-4xl flex items-center space-x-1">
-            <span className="px-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded shadow-md inline-flex items-center">
-              Nik's
-            </span>
-            <span className="text-black dark:text-white font-bold text-2xl">Blog</span>
-          </Link>
+        <Link to="/" className="flex items-center space-x-2 px-0">
+  <span className="px-3 py-2 text-2xl bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-md shadow-md inline-flex items-center">
+    Nik's
+  </span>
+  <span className="text-black dark:text-white font-bold text-2xl">Blog</span>
+</Link>
+
           <p className="text-sm mt-2 text-gray-700">
             This is a demo project. You can sign up with your email and password or with Google.
           </p>

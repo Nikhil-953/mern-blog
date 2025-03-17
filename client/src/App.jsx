@@ -13,6 +13,7 @@ import "flowbite/dist/flowbite.min.css";
 
 
 import "./index.css";
+import Footer from "./components/Footer";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/projects" element={<Projects />} />
       </Routes>
+       <Footer />
     </BrowserRouter>
   )
 }
