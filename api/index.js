@@ -5,28 +5,23 @@ dotenv.config();
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 
-mongoose
-    .connect(process.env.MONGO)
-    .then(() => {
-        console.log('Connected to MongoDB');
-    }
-).catch((err) => {
-    console.log('Error:', err.message);
-});
-
 const app = express();
 
+// Middleware
 app.use(express.json());
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-});
 
+// Database Connection
+mongoose
+    .connect(process.env.MONGO)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch((err) => console.log('Error:', err.message));
 
-app.use('/api/user',userRoutes);
-app.use('/api/auth',authRoutes);
+// Routes
+app.use('/api/user', userRoutes);
+app.use('/api/auth', authRoutes);
 
-
+// Global Error Handler
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
     const message = err.message || 'Internal Server Error';
@@ -34,5 +29,10 @@ app.use((err, req, res, next) => {
         success: false,
         statusCode,
         message,
-    })
+    });
+});
+
+// Start the Server **after defining routes**
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
 });
