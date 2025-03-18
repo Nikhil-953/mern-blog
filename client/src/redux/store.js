@@ -1,12 +1,31 @@
 // src/redux/store.js
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import userReducer from './user/userSlice';
+import { persistReducer,persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+
+
+const rootReducers = combineReducers({
+  user: userReducer,
+});
+
+const persistConfig = {
+    key: 'root',
+    storage,
+    version: 1,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducers);
+
 
 export const store = configureStore({
-  reducer: {
-    user: userReducer, // ✅ Correct placement of reducer
-  },
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware({ serializableCheck: false }),
   devTools: process.env.NODE_ENV !== 'production', // DevTools enabled in dev mode
 });
 
-export default store;
+// export default store;
+
+export const persistor = persistStore(store);
