@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Label, TextInput, Alert, Spinner } from "flowbite-react";
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart, signInFailure, signInSuccess } from "../redux/user/userSlice";
 
 export default function Signin() {
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -16,13 +18,11 @@ export default function Signin() {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      return setErrorMessage("Please fill out all fields.");
+      return dispatch(signInFailure("Please fill in all fields"));
     }
 
-    setErrorMessage(null);
-    setLoading(true);
-
     try {
+      dispatch(signInStart());
       const res = await fetch("/api/auth/sign-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,36 +32,28 @@ export default function Signin() {
       const responseData = await res.json(); // Parse JSON response
 
       if (!res.ok) {
-        return setErrorMessage(responseData.message || `HTTP error! Status: ${res.status}`);
+        dispatch(signInFailure(responseData.message));
+        return;
       }
 
       console.log("Signin successful:", responseData);
-      // Redirect or handle success (e.g., navigate to login page)
-
-      setLoading(false);
-      navigate("/sign-in");
-      if(res.ok){
-        navigate("/");
-      }
+      dispatch(signInSuccess(responseData));
+      navigate("/");
     } catch (error) {
-      console.error("Signup failed:", error);
-      setErrorMessage("Signup failed. Please try again.");
+      dispatch(signInFailure(error.message));
     }
-
-    setLoading(false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="p-6 max-w-4xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between w-full gap-5">
-        
         <div className="md:w-1/2 flex-1">
-        <Link to="/" className="flex items-center space-x-2 px-0">
-  <span className="px-3 py-2 text-2xl bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-md shadow-md inline-flex items-center">
-    Nik's
-  </span>
-  <span className="text-black dark:text-white font-bold text-2xl">Blog</span>
-</Link>
+          <Link to="/" className="flex items-center space-x-2 px-0">
+            <span className="px-3 py-2 text-2xl bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-md shadow-md inline-flex items-center">
+              Nik's
+            </span>
+            <span className="text-black dark:text-white font-bold text-2xl">Blog</span>
+          </Link>
 
           <p className="text-sm mt-2 text-gray-700">
             This is a demo project. You can sign in with your email and password or with Google.
@@ -70,8 +62,7 @@ export default function Signin() {
 
         <div className="md:w-1/2 md:flex md:justify-end mt-6 md:mt-0 flex-1">
           <div className="w-full max-w-sm">
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>  
-              
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div>
                 <Label value="Your email" className="text-left block font-semibold mb-1" />
                 <TextInput type="email" placeholder="name@company.com" id="email" onChange={handleChange} />
@@ -81,20 +72,19 @@ export default function Signin() {
                 <TextInput type="password" placeholder="********" id="password" onChange={handleChange} />
               </div>
 
-              <Button 
+              <Button
                 className="bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold px-4 py-2 rounded-lg shadow-md w-full"
                 type="submit"
                 disabled={loading}
               >
-                {
-                loading ? (
+                {loading ? (
                   <>
-                  <Spinner size='sm'/>
-                  <span className="pl-3">Loading...</span>
+                    <Spinner size="sm" />
+                    <span className="pl-3">Loading...</span>
                   </>
-                ): ("Sign In"
-                )
-                }
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
 
@@ -105,8 +95,10 @@ export default function Signin() {
             )}
 
             <div className="flex justify-center gap-2 text-sm mt-5">
-              <span>Don't Have an account?</span>
-              <Link to="/sign-un" className="text-blue-500 font-bold">Sign Up</Link>
+              <span>Don't have an account?</span>
+              <Link to="/sign-up" className="text-blue-500 font-bold">
+                Sign Up
+              </Link>
             </div>
           </div>
         </div>
