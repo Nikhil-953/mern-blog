@@ -2,3 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body, #root {
+    background-color: white;
+    color: #374151; /* Default text color for light mode */
+  }
+  
+  html.dark, body.dark, #root.dark {
+    background-color: #1a202c; /* Dark mode background */
+    color: #e5e7eb; /* Light text for dark mode */
+  }
+  
+  
