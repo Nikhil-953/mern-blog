@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Label, TextInput, Alert, Spinner } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signInStart, signInFailure, signInSuccess } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function Signin() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -86,6 +87,7 @@ export default function Signin() {
                   "Sign In"
                 )}
               </Button>
+              <OAuth />
             </form>
 
             {errorMessage && (

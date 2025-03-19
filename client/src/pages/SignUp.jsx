@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate} from "react-router-dom";
 import { Button, Label, TextInput, Alert, Spinner } from "flowbite-react";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
@@ -99,6 +100,7 @@ export default function SignUp() {
                 )
                 }
               </Button>
+              <OAuth />
             </form>
 
             {errorMessage && (
