@@ -25,7 +25,7 @@ const Dashboard = () => {
       {/* Sidebar */}
       <div
         className="
-          md:w-56 
+          w-full md:w-56 h-screen 
         "
       >
         <DashSidebar />
@@ -34,7 +34,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div
         className="
-          w-full
+          w-full 
         "
       >
         {tab === 'profile' && <DashProfile />}

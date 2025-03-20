@@ -13,82 +13,140 @@ const Header = () => {
   const { theme } = useSelector((state) => state.theme);
 
   return (
-    <Navbar className="border-b-2 px-4 py-2 bg-gray-900 dark:bg-black text-white">
-      {/* Nik's Blog with Gradient */}
-      <Link to="/" className="flex items-center space-x-2 px-0">
-        <span className="px-2 py-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-md shadow-md inline-flex items-center">
-          Nik's
-        </span>
-        <span className="text-white dark:text-white font-bold text-lg">Blog</span>
+    <Navbar
+  className={`border-b-2 px-4 py-2 ${
+    theme === "dark"
+      ? "bg-black text-white" // Dark Mode
+      : "bg-white text-black" // Light Mode
+  }`}
+>
+  {/* Nik's Blog with Gradient */}
+  <Link to="/" className="flex items-center space-x-2 px-0">
+    <span className="px-2 py-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-md shadow-md inline-flex items-center">
+      Nik's
+    </span>
+    <span
+      className={`font-bold text-lg ${
+        theme === "dark" ? "text-white" : "text-black"
+      }`}
+    >
+      Blog
+    </span>
+  </Link>
+
+  {/* Mobile Toggle Button */}
+  <Navbar.Toggle />
+
+  {/* Middle Section with Search (Hidden in mobile) */}
+  <form className="hidden lg:flex">
+    <TextInput
+      type="text"
+      placeholder="Search..."
+      rightIcon={AiOutlineSearch}
+      className={`w-64 ${
+        theme === "dark"
+          ? "bg-gray-800 text-white"
+          : "bg-gray-100 text-black"
+      }`}
+    />
+  </form>
+
+  {/* Mobile Search Button */}
+  <Button
+    className={`w-12 h-10 lg:hidden ${
+      theme === "dark" ? "bg-gray-800" : "bg-gray-200"
+    }`}
+    pill={true}
+  >
+    <AiOutlineSearch />
+  </Button>
+
+  {/* Right Section with Theme and Auth Controls */}
+  <div className="flex gap-2 md:order-2">
+    {/* Theme Toggle */}
+    <button
+      className={`w-12 h-10 flex items-center justify-center ${
+        theme === "dark" ? "bg-gray-800" : "bg-gray-200"
+      } rounded-full`}
+      onClick={() => dispatch(toggleTheme())}
+    >
+      {theme === "light" ? (
+        <FaSun className="text-yellow-400" />
+      ) : (
+        <FaMoon className="text-gray-300" />
+      )}
+    </button>
+
+    {/* User Dropdown / Auth Controls */}
+    {currentUser ? (
+      <Dropdown
+        arrowIcon={false}
+        inline
+        label={<Avatar alt="user" img={currentUser.profilePicture} rounded />}
+      >
+        <Dropdown.Header>
+          <span className="block text-sm">@{currentUser.username}</span>
+          <span className="block text-sm font-medium">
+            {currentUser.email}
+          </span>
+        </Dropdown.Header>
+
+        <Link to={"/dashboard?tab=profile"}>
+          <Dropdown.Item>Profile</Dropdown.Item>
+        </Link>
+        <Dropdown.Divider />
+        <Dropdown.Item>Sign out</Dropdown.Item>
+      </Dropdown>
+    ) : (
+      <Link to="/sign-in">
+        <Button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold px-4 py-2 rounded-lg">
+          Sign In
+        </Button>
       </Link>
+    )}
+  </div>
 
-      {/* Mobile Toggle Button */}
-      <Navbar.Toggle />
-      
-      {/* Middle Section with Search (Hidden in mobile) */}
-      <form className="hidden lg:flex">
-        <TextInput
-          type="text"
-          placeholder="Search..."
-          rightIcon={AiOutlineSearch}
-          className="w-64 bg-gray-800 text-white"
-        />
-      </form>
+  {/* Navbar Links (Collapsible in Mobile) */}
+  <Navbar.Collapse>
+    <Navbar.Link
+      className={`${
+        path === "/"
+          ? "text-blue-500 font-bold"
+          : theme === "dark"
+          ? "text-gray-400"
+          : "text-gray-700"
+      }`}
+      as={"div"}
+    >
+      <Link to="/">Home</Link>
+    </Navbar.Link>
+    <Navbar.Link
+      className={`${
+        path === "/about"
+          ? "text-blue-500 font-bold"
+          : theme === "dark"
+          ? "text-gray-400"
+          : "text-gray-700"
+      }`}
+      as={"div"}
+    >
+      <Link to="/about">About</Link>
+    </Navbar.Link>
+    <Navbar.Link
+      className={`${
+        path === "/projects"
+          ? "text-blue-500 font-bold"
+          : theme === "dark"
+          ? "text-gray-400"
+          : "text-gray-700"
+      }`}
+      as={"div"}
+    >
+      <Link to="/projects">Projects</Link>
+    </Navbar.Link>
+  </Navbar.Collapse>
+</Navbar>
 
-      {/* Mobile Search Button */}
-      <Button className="w-12 h-10 lg:hidden" color="gray" pill={true}>
-        <AiOutlineSearch />
-      </Button>
-
-      {/* Right Section with Theme and Auth Controls */}
-      <div className="flex gap-2 md:order-2">
-        <button
-          className="w-12 h-10 flex items-center justify-center bg-gray-800 rounded-full"
-          onClick={() => dispatch(toggleTheme())}
-        >
-          {theme === "light" ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-300" />}
-        </button>
-
-        {currentUser ? (
-          <Dropdown 
-            arrowIcon={false}
-            inline
-            label={<Avatar alt="user" img={currentUser.profilePicture} rounded />}
-          >
-            <Dropdown.Header>
-              <span className="block text-sm">@{currentUser.username}</span>
-              <span className="block text-sm font-medium">{currentUser.email}</span>
-            </Dropdown.Header>
-            
-            <Link to={"/dashboard?tab=profile"}>
-              <Dropdown.Item>Profile</Dropdown.Item>
-            </Link>
-            <Dropdown.Divider />
-            <Dropdown.Item>Sign out</Dropdown.Item>
-           
-          </Dropdown>
-        ) : (
-          <Link to="/sign-in">
-            <Button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold px-4 py-2 rounded-lg">
-              Sign In
-            </Button>
-          </Link>
-        )}
-      </div>
-
-      {/* Navbar Links (Collapsible in Mobile) */}
-      <Navbar.Collapse>
-        <Navbar.Link className={path === "/" ? "text-blue-500 font-bold" : "text-gray-400"} as={"div"}>
-          <Link to="/">Home</Link>
-        </Navbar.Link>
-        <Navbar.Link className={path === "/about" ? "text-blue-500 font-bold" : "text-gray-400"} as={"div"}>
-          <Link to="/about">About</Link>
-        </Navbar.Link>
-        <Navbar.Link className={path === "/projects" ? "text-blue-500 font-bold" : "text-gray-400"} as={"div"}>
-          <Link to="/projects">Projects</Link>
-        </Navbar.Link>
-      </Navbar.Collapse>
-    </Navbar>
   );
 };
 

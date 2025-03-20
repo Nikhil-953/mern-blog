@@ -19,7 +19,7 @@ export default function DashSidebar() {
   return (
    <Sidebar
   className="
-    w-full sm:w-full md:w-64 sm:h-[180px] sm:h-[250px] md:h-[350px] lg:h-screen
+    w-full sm:w-full md:w-64  sm:h-[250px] md:h-[350px] lg:h-screen
   "
 >
   <Sidebar.Items>
