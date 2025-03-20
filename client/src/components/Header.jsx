@@ -1,10 +1,9 @@
 import { Button, Navbar, Dropdown, TextInput, Avatar } from "flowbite-react";
-
 import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import "flowbite/dist/flowbite.min.css";
-import { FaMoon , FaSun} from "react-icons/fa";
-import { useSelector,useDispatch } from "react-redux";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
 
 const Header = () => {
@@ -12,32 +11,46 @@ const Header = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user || {});
   const { theme } = useSelector((state) => state.theme);
+
   return (
-    <Navbar className="border-b-2 px-4 py-2 flex justify-between items-center">
+    <Navbar className="border-b-2 px-4 py-2 bg-gray-900 dark:bg-black text-white">
       {/* Nik's Blog with Gradient */}
       <Link to="/" className="flex items-center space-x-2 px-0">
         <span className="px-2 py-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-md shadow-md inline-flex items-center">
           Nik's
         </span>
-        <span className="text-black dark:text-white font-bold text-lg">Blog</span>
+        <span className="text-white dark:text-white font-bold text-lg">Blog</span>
       </Link>
 
-      {/* Search Input */}
+      {/* Mobile Toggle Button */}
+      <Navbar.Toggle />
+      
+      {/* Middle Section with Search (Hidden in mobile) */}
       <form className="hidden lg:flex">
-        <TextInput type="text" placeholder="Search..." rightIcon={AiOutlineSearch} className="w-64" />
+        <TextInput
+          type="text"
+          placeholder="Search..."
+          rightIcon={AiOutlineSearch}
+          className="w-64 bg-gray-800 text-white"
+        />
       </form>
 
+      {/* Mobile Search Button */}
       <Button className="w-12 h-10 lg:hidden" color="gray" pill={true}>
         <AiOutlineSearch />
       </Button>
 
+      {/* Right Section with Theme and Auth Controls */}
       <div className="flex gap-2 md:order-2">
-        <button className="w-12 h-10" color="gray" pill onClick={() => dispatch(toggleTheme())}>
-          {theme == 'light' ? <FaSun/>: <FaMoon/>}
+        <button
+          className="w-12 h-10 flex items-center justify-center bg-gray-800 rounded-full"
+          onClick={() => dispatch(toggleTheme())}
+        >
+          {theme === "light" ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-300" />}
         </button>
 
         {currentUser ? (
-          <Dropdown
+          <Dropdown 
             arrowIcon={false}
             inline
             label={<Avatar alt="user" img={currentUser.profilePicture} rounded />}
@@ -46,11 +59,13 @@ const Header = () => {
               <span className="block text-sm">@{currentUser.username}</span>
               <span className="block text-sm font-medium">{currentUser.email}</span>
             </Dropdown.Header>
-            <Link to={'/dashboard?tab=profile'}>
-            <Dropdown.Item>Profile</Dropdown.Item>
+            
+            <Link to={"/dashboard?tab=profile"}>
+              <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
-            <Dropdown.Divider/>
+            <Dropdown.Divider />
             <Dropdown.Item>Sign out</Dropdown.Item>
+           
           </Dropdown>
         ) : (
           <Link to="/sign-in">
@@ -59,19 +74,17 @@ const Header = () => {
             </Button>
           </Link>
         )}
-
-        <Navbar.Toggle />
       </div>
 
-      {/* Navbar Links */}
+      {/* Navbar Links (Collapsible in Mobile) */}
       <Navbar.Collapse>
-        <Navbar.Link className={path === "/" ? "text-blue-500 font-bold" : "text-gray-700"} as={"div"}>
+        <Navbar.Link className={path === "/" ? "text-blue-500 font-bold" : "text-gray-400"} as={"div"}>
           <Link to="/">Home</Link>
         </Navbar.Link>
-        <Navbar.Link className={path === "/about" ? "text-blue-500 font-bold" : "text-gray-700"} as={"div"}>
+        <Navbar.Link className={path === "/about" ? "text-blue-500 font-bold" : "text-gray-400"} as={"div"}>
           <Link to="/about">About</Link>
         </Navbar.Link>
-        <Navbar.Link className={path === "/projects" ? "text-blue-500 font-bold" : "text-gray-700"} as={"div"}>
+        <Navbar.Link className={path === "/projects" ? "text-blue-500 font-bold" : "text-gray-400"} as={"div"}>
           <Link to="/projects">Projects</Link>
         </Navbar.Link>
       </Navbar.Collapse>
