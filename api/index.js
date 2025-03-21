@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import uploadRouter from './routes/uploadRoutes.js';
-
+//import uploadRouter from './routes/uploadRouteimport 
+import uploadRouter from './routes/uploadRoutes.js'
 const app = express();
 
 // ✅ Enable CORS

@@ -14,7 +14,7 @@ export const uploadImage = async (req, res) => {
     }
 
     res.status(200).json({
-      message: 'Image uploaded successfully!',
+      message: 'Image uploaded successfully! hurray',
       imageUrl: cloudinaryResponse.secure_url,
     });
   } catch (error) {
