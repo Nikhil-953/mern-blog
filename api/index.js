@@ -1,38 +1,20 @@
 import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-dotenv.config();
-import userRoutes from './routes/user.route.js';
-import authRoutes from './routes/auth.route.js';
+import cors from 'cors';
+import uploadRouter from './routes/uploadRoutes.js';
 
 const app = express();
 
-// Middleware
+// ✅ Enable CORS
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // React URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
 app.use(express.json());
+app.use('/api/upload', uploadRouter);
 
-
-// Database Connection
-mongoose
-    .connect(process.env.MONGO)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.log('Error:', err.message));
-
-// Routes
-app.use('/api/user', userRoutes);
-app.use('/api/auth', authRoutes);
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const message = err.message || 'Internal Server Error';
-    res.status(statusCode).json({
-        success: false,
-        statusCode,
-        message,
-    });
-});
-
-// Start the Server **after defining routes**
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
