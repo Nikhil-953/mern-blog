@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate} from "react-router-dom";
 import { Button, Label, TextInput, Alert, Spinner } from "flowbite-react";
-//import OAuth from "../components/OAuth";
+import OAuth from "../components/OAuth.jsx";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
@@ -24,7 +24,7 @@ export default function SignUp() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/sign-up", {
+      const res = await fetch("http://localhost:3000/api/auth/sign-up", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

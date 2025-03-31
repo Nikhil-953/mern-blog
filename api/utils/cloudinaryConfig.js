@@ -1,3 +1,4 @@
+// Import Cloudinary and fs modules
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 
@@ -34,4 +35,5 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
+// Export as a named export
 export { uploadOnCloudinary };
