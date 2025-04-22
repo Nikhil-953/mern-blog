@@ -3,42 +3,50 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { updateStart, updateSuccess, updateFailure } from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 export default function DashProfile() {
   const { currentUser } = useSelector((state) => state.user);
+  console.log('👤 currentUser:', currentUser);
   const [imageFile, setImageFile] = useState(null);
+  
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
+  const [imageFileUploading, setImageFileUploading] = useState(false);
+  const [formData, setFormData] = useState({});
   const filePickerRef = useRef();
+  const dispatch = useDispatch();
+
 
   // Handle image change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      setImageFileUrl(URL.createObjectURL(file)); // Create preview URL
+      setImageFileUrl(URL.createObjectURL(file)); // Preview URL
     }
   };
 
   useEffect(() => {
     if (imageFile) {
-      uploadImage(imageFile); // ✅ Pass imageFile correctly
+      uploadImage(imageFile); // ✅ Upload image when selected
     }
   }, [imageFile]);
 
-  // Upload Image to Backend and Get Cloudinary URL
+  // Upload Image to Cloudinary
   const uploadImage = async (file) => {
     try {
       const formData = new FormData();
-      formData.append('image', file); // Key 'image' matches backend
+      formData.append('image', file);
 
-      // Simulating upload progress (Optional, but better for visual UX)
+      // Simulate upload progress
       for (let i = 0; i <= 100; i += 10) {
-        await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate progress
-        setImageFileUploadProgress(i); // Update progress
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        setImageFileUploadProgress(i);
       }
 
-      // Send request to backend
+      // Send request to backend for Cloudinary upload
       const res = await fetch('http://localhost:3000/api/upload/niki', {
         method: 'POST',
         body: formData,
@@ -50,12 +58,13 @@ export default function DashProfile() {
       }
 
       const data = await res.json();
-      console.log('Image Uploaded:', data.imageUrl);
+      const downloadURL = data.imageUrl; // ✅ Get image URL from response
 
-      // ✅ Show alert only after upload completes
+      console.log('Image Uploaded:', downloadURL);
+      setFormData({ ...formData, profilePicture: downloadURL }); // ✅ Add image URL to formData
       alert('Image uploaded successfully!');
 
-      // ✅ Reset progress to hide CircularProgressbar
+      // ✅ Reset progress after completion
       setImageFileUploadProgress(null);
     } catch (error) {
       console.error('Error uploading image:', error.message);
@@ -64,11 +73,65 @@ export default function DashProfile() {
     }
   };
 
+  // Handle form changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  // Handle form submission (update user details)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Ensure an image is uploaded first if needed
+    if (imageFile) {
+      await uploadImage(imageFile);
+    }
+  
+    console.log('✅ Form Data being sent:', formData);
+  
+    if (Object.keys(formData).length === 0) {
+      alert('No changes detected!');
+      return;
+    }
+  
+    try {
+      dispatch(updateStart());
+  
+      // Correct API endpoint for user update
+      const res = await fetch(`http://localhost:3000/api/user/update/${currentUser._id}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // ✅ Ensures cookies (token) are sent
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await res.json();
+      console.log('✅ Response:', data);
+  
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        alert(`Error: ${data.message}`);
+      } else {
+        dispatch(updateSuccess(data));
+        alert('Profile updated successfully!');
+      }
+    } catch (error) {
+      console.error('❌ Error updating profile:', error);
+      dispatch(updateFailure(error.message));
+      alert('Error updating profile');
+    }
+  };
+  
+
   return (
     <div className="h-screen max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
-      <form className="flex flex-col gap-4">
-        {/* File Input to Upload Image */}
+
+      {/* Form to handle user profile update */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/* Hidden File Input to Upload Image */}
         <input
           type="file"
           accept="image/*"
@@ -86,6 +149,7 @@ export default function DashProfile() {
           "
           onClick={() => filePickerRef.current.click()}
         >
+          {/* Show Upload Progress */}
           {imageFileUploadProgress !== null && (
             <CircularProgressbar
               value={imageFileUploadProgress}
@@ -107,46 +171,51 @@ export default function DashProfile() {
               }}
             />
           )}
+
+          {/* Show Profile Picture */}
+          
           <img
             src={imageFileUrl || currentUser.profilePicture}
             alt="user"
-            className={`w-full h-full object-cover rounded-full aspect-square
-              ${imageFileUploadProgress !== null && imageFileUploadProgress < 100 && 'opacity-60'}
+            className={`w-full h-full object-contain rounded-full aspect-square bg-gray-100
+              ${
+                imageFileUploadProgress !== null &&
+                imageFileUploadProgress < 100 &&
+                'opacity-60'
+              }
             `}
+            
             style={{
               border: '5px solid #d1d5db', // Tailwind's gray-300 color
             }}
           />
+          
         </div>
 
         {/* User Information */}
         <TextInput
           type="text"
           id="username"
-          placeholder="username"
+          placeholder="Username"
           defaultValue={currentUser.username}
+          onChange={handleChange}
         />
         <TextInput
           type="email"
           id="email"
-          placeholder="email"
+          placeholder="Email"
           defaultValue={currentUser.email}
+          onChange={handleChange}
         />
-        <TextInput type="password" id="password" placeholder="password" />
+        <TextInput
+          type="password"
+          id="password"
+          placeholder="New Password"
+          onChange={handleChange}
+        />
 
-        {/* Update Button */}
-        <Button
-          type="button"
-          onClick={() => {
-            if (imageFile) {
-              uploadImage(imageFile); // ✅ Pass imageFile correctly
-            } else {
-              alert('Please select an image first!');
-            }
-          }}
-        >
-          Upload
-        </Button>
+        {/* Submit Button to Update User Details */}
+        <Button type="submit">Update Profile</Button>
       </form>
 
       {/* Delete and Sign Out Buttons */}

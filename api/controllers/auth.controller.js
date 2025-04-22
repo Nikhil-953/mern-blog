@@ -63,15 +63,17 @@ export const signin = async (req, res, next) => {
     });
 
     const { password: pass, ...rest } = validUser._doc;
-
+    console.log('Generated Token:', token);
     res
-      .status(200)
-      .cookie('access_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-      })
-      .json(rest);
+    .cookie('access_token', token, {
+      httpOnly: true,
+      secure: false,        // ❌ true only in production with HTTPS
+      sameSite: 'Lax',      // ✅ Allows cross-origin with credentials
+      path: '/',            // optional
+    })
+    .status(200)
+    .json({ success: true, user: rest });
+  
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
@@ -87,14 +89,15 @@ export const google = async (req, res, next) => {
         expiresIn: '7d',
       });
       const { password: pass, ...rest } = user._doc;
-      return res
-        .status(200)
-        .cookie('access_token', token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
-        })
-        .json(rest);
+      res.cookie('access_token', token, {
+        httpOnly: false,  // 🔥 TEMPORARY: Allow JavaScript to read the cookie (remove in production)
+        secure: false,    // 🔥 `false` on localhost, `true` in production (HTTPS)
+        sameSite: 'Lax',  // 🔥 Allows frontend to send cookies
+        path: '/',        // 🔥 Ensures cookie is available on all routes
+      })
+      .status(200)
+      .json({ success: true, user });
+      
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +

@@ -28,6 +28,7 @@ export default function Signin() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
+        credentials: "include", // Include credentials (cookies) in the request
       });
 
       const responseData = await res.json(); // Parse JSON response

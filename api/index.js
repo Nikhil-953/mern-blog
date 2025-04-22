@@ -22,6 +22,7 @@ app.use(
     origin: 'http://localhost:5173', // React URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   })
 );
 
@@ -31,7 +32,7 @@ app.use(cookieParser());
 
 // ✅ Correct middleware placement
 app.use('/api/auth', router);
-app.use('/api/upload', uploadRouter);
+app.use('/api/upload/', uploadRouter);
 app.use('/api/user',userRouter);
 
 const PORT = process.env.PORT || 3000;
