@@ -6,8 +6,10 @@ import 'react-circular-progressbar/dist/styles.css';
 import { updateStart, updateSuccess, updateFailure,deleteUserStart,deleteUserFailure,deleteUserSuccess,signoutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
+
 export default function DashProfile() {
-  const { currentUser,error} = useSelector((state) => state.user);
+  const { currentUser,error,loading} = useSelector((state) => state.user);
   console.log('👤 currentUser:', currentUser);
   const [imageFile, setImageFile] = useState(null);
   const [UpdaeUserLoading, setUpdateUserLoading] = useState(false);
@@ -258,7 +260,27 @@ const handleDeleteUser = async () => {
         />
 
         {/* Submit Button to Update User Details */}
-        <Button type="submit">Update Profile</Button>
+        <Button 
+        type="submit" 
+        gradientDuoTone='purpleToBlue'
+        outline
+        disabled={loading || imageFileUploading}
+        >
+          {loading ? 'Loading...' : 'Update Profile'}
+          </Button>
+        {
+          currentUser.isAdmin && (
+           <Link to={'/create-post'}>
+              <Button
+              type='button'
+              gradientDuoTone='purpleToPink'
+              className='w-full'
+              >
+                Create a Post
+              </Button>
+           </Link>
+          )
+        }
       </form>
 
       {/* Delete and Sign Out Buttons */}

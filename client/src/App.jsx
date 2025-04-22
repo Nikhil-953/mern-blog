@@ -9,11 +9,12 @@ import Header from "./components/Header";
 import React from "react";
 import "flowbite/dist/flowbite.min.css";
 import PrivateRoute from './components/PrivateRoute';
-
+import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute';
 
 
 import "./index.css";
 import Footer from "./components/Footer";
+import CreatePost from "./pages/CreatePost";
 
 const App = () => {
   return (
@@ -27,6 +28,9 @@ const App = () => {
         <Route element={<PrivateRoute/>}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>  
+        <Route element={<OnlyAdminPrivateRoute/>}>
+          <Route path="/create-post" element={<CreatePost />} />
+        </Route> 
         <Route path="/projects" element={<Projects />} />
       </Routes>
        <Footer />
