@@ -5,6 +5,7 @@ import "flowbite/dist/flowbite.min.css";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
+import { signoutSuccess } from "../redux/user/userSlice";
 
 const Header = () => {
   const path = useLocation().pathname;
@@ -12,6 +13,25 @@ const Header = () => {
   const { currentUser } = useSelector((state) => state.user || {});
   const { theme } = useSelector((state) => state.theme);
 
+
+  const handleSignout = async () => {
+      try{
+        const res=await fetch('api/user/signout',{
+          method: 'POST',
+          credentials: 'include',
+        });
+        const data=await res.json();
+        if(!res.ok){
+          console.log(data.message);
+        }else{
+          dispatch(signoutSuccess(data));
+          
+        }
+      }catch(error){
+        console.error('Error signing out:', error);
+      }
+    }
+    
   return (
     <Navbar
   className={`border-b-2 px-4 py-2 ${
@@ -95,7 +115,7 @@ const Header = () => {
           <Dropdown.Item>Profile</Dropdown.Item>
         </Link>
         <Dropdown.Divider />
-        <Dropdown.Item>Sign out</Dropdown.Item>
+        <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
       </Dropdown>
     ) : (
       <Link to="/sign-in">
