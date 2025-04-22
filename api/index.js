@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import uploadRouter from './routes/uploadRoutes.js';
 import router from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
+import postRouter from './routes/post.route.js';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use(cookieParser());
 app.use('/api/auth', router);
 app.use('/api/upload/', uploadRouter);
 app.use('/api/user',userRouter);
+app.use('/api/post',postRouter);
 
 const PORT = process.env.PORT || 3000;
 

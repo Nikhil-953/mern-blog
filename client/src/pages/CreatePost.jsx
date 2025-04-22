@@ -6,7 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 
 
 const CreatePost = () => {
-  return <div className=''p-3 max-w-3xl mx-auto min-h-screen>
+  return <div className='p-3 max-w-3xl mx-auto min-h-screen'>
     <h1 className='text-center font-semibold text-3xl my-7'>Create Post</h1>
     <form className='flex flex-col gap-4'>
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>
