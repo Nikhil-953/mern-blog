@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
+import DashPosts from '../components/DashPosts';
 
 const Dashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [tab, setTab] = useState('');
 
   useEffect(() => {
@@ -15,29 +17,23 @@ const Dashboard = () => {
     }
   }, [location.search]);
 
+  // Function to change tab and update URL
+  const handleTabChange = (newTab) => {
+    setTab(newTab);
+    navigate(`?tab=${newTab}`); // Update the URL without refreshing the page
+  };
+
   return (
-    <div
-      className="
-        min-h-screen flex flex-col
-        md:flex-row
-      "
-    >
+    <div className="min-h-screen flex flex-col md:flex-row">
       {/* Sidebar */}
-      <div
-        className="
-          w-full md:w-56 h-screen 
-        "
-      >
-        <DashSidebar />
+      <div className="w-full md:w-56 h-screen">
+        <DashSidebar handleTabChange={handleTabChange} />
       </div>
 
       {/* Main Content */}
-      <div
-        className="
-          w-full 
-        "
-      >
+      <div className="w-full">
         {tab === 'profile' && <DashProfile />}
+        {tab === 'posts' && <DashPosts />}
       </div>
     </div>
   );
