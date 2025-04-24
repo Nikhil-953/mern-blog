@@ -11,6 +11,7 @@ import "flowbite/dist/flowbite.min.css";
 import PrivateRoute from './components/PrivateRoute';
 import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute';
 import PostPage from "./pages/PostPage";
+import UpdatePost from "./pages/UpdatePost";
 
 import "./index.css";
 import Footer from "./components/Footer";
@@ -31,6 +32,7 @@ const App = () => {
         <Route element={<OnlyAdminPrivateRoute/>}>
           <Route path="/create-post" element={<CreatePost />} />
           <Route path='/post/:slug' element={<PostPage />} />
+          <Route path="/update-post/:postId" element={<UpdatePost />} />
         </Route> 
         <Route path="/projects" element={<Projects />} />
         
