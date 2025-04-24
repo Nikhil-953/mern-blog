@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom';
 import { signoutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import { HiOutlineUserGroup } from 'react-icons/hi';
+
+
 
 export default function DashSidebar() {
   const location = useLocation();
@@ -63,6 +66,16 @@ export default function DashSidebar() {
               <Link to="/dashboard?tab=posts">
                 <Sidebar.Item active={tab === 'posts'} icon={HiDocumentText} as="div">
                   Posts
+                </Sidebar.Item>
+              </Link>
+            </div>
+          )}
+
+          {currentUser.isAdmin && (
+            <div className="mt-4"> {/* This adds the gap */}
+              <Link to="/dashboard?tab=users">
+              <Sidebar.Item active={tab === 'users'} icon={HiOutlineUserGroup} as="div">
+                  Users
                 </Sidebar.Item>
               </Link>
             </div>

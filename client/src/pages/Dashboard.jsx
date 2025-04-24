@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import DashPosts from '../components/DashPosts';
-
+import DashUsers from '../components/DashUsers';
 const Dashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,6 +34,7 @@ const Dashboard = () => {
       <div className="w-full">
         {tab === 'profile' && <DashProfile />}
         {tab === 'posts' && <DashPosts />}
+        {tab === 'users' && <DashUsers />} {/* Default to posts if no tab is selected */}
       </div>
     </div>
   );
