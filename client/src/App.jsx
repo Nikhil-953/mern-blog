@@ -31,11 +31,11 @@ const App = () => {
         </Route>  
         <Route element={<OnlyAdminPrivateRoute/>}>
           <Route path="/create-post" element={<CreatePost />} />
-          <Route path='/post/:slug' element={<PostPage />} />
+         
           <Route path="/update-post/:postId" element={<UpdatePost />} />
         </Route> 
         <Route path="/projects" element={<Projects />} />
-        
+        <Route path='/post/:slug' element={<PostPage />} />
       </Routes>
        <Footer />
     </BrowserRouter>

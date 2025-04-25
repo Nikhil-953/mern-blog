@@ -1,5 +1,6 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Spinner, Button } from 'flowbite-react';
 
 export default function PostPage() {
   const { slug } = useParams();
@@ -14,11 +15,12 @@ export default function PostPage() {
         const data = await res.json();
         if (res.ok && data.posts.length > 0) {
           setPost(data.posts[0]);
+          setError(null);
         } else {
           setError('Post not found');
         }
       } catch (err) {
-        setError(err.message);
+        setError('Something went wrong');
       } finally {
         setLoading(false);
       }
@@ -27,12 +29,27 @@ export default function PostPage() {
     fetchPost();
   }, [slug]);
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner size="xl" />
+      </div>
+    );
+  }
+
   if (error) return <div className="text-red-500 text-center py-8">{error}</div>;
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <h1 className="text-4xl font-bold text-center">{post.title}</h1>
+
+      <div className="flex justify-center">
+        <Link to={`/search?category=${post.category}`}>
+          <Button color="gray" pill size="xs" className="mt-2">
+            {post.category}
+          </Button>
+        </Link>
+      </div>
 
       {post.image && (
         <img
@@ -42,8 +59,15 @@ export default function PostPage() {
         />
       )}
 
+      <div className='flex justify-between p-3 border-slate-500 mx-auto
+      w-full max-w-2xl text-xs'>
+        <span>{post &&  new Date(post.createdAt).toLocaleDateString()}</span>
+        <span className='italic'>{post && Math.max(1, Math.ceil(post.content.split(' ').length / 200))} mins read</span>
+
+      </div>
+
       <article
-        className="prose max-w-none pt-6"
+        className="prose max-w-none pt-6 post-content"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
     </div>
