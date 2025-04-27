@@ -3,6 +3,7 @@ import { deleteUser,signout,test, updateUser } from '../controllers/user.control
 import { verifyToken } from '../utils/verifyUser.js';
 import { get } from 'mongoose';
 import { getUsers } from '../controllers/user.controller.js';
+import { getUser } from '../controllers/user.controller.js';
 const router = express.Router();
 
 // Route to test API
@@ -13,5 +14,6 @@ router.put('/update/:userId', verifyToken, updateUser);
 router.delete('/delete/:userId', verifyToken, deleteUser);
 router.post('/signout',signout);
 router.get('/getusers',verifyToken,getUsers);
+router.get('/:userId',getUser)
 
 export default router;
