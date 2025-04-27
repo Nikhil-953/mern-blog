@@ -16,10 +16,12 @@ import UpdatePost from "./pages/UpdatePost";
 import "./index.css";
 import Footer from "./components/Footer";
 import CreatePost from "./pages/CreatePost";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />

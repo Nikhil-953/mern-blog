@@ -25,21 +25,22 @@ export default function DashSidebar() {
   }, [location.search]);
 
   const handleSignout = async () => {
-    try {
-      const res = await fetch('api/user/signout', {
+    try{
+      const res=await fetch('/api/user/signout',{
         method: 'POST',
         credentials: 'include',
       });
-      const data = await res.json();
-      if (!res.ok) {
+      const data=await res.json();
+      if(!res.ok){
         console.log(data.message);
-      } else {
+      }else{
         dispatch(signoutSuccess(data));
+        
       }
-    } catch (error) {
+    }catch(error){
       console.error('Error signing out:', error);
     }
-  };
+  }
 
   return (
     <Sidebar

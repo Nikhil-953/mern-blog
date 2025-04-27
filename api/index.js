@@ -7,7 +7,7 @@ import uploadRouter from './routes/uploadRoutes.js';
 import router from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
 import postRouter from './routes/post.route.js';
-
+import commentRouter from './routes/comment.route.js';
 dotenv.config();
 
 const app = express(); // ✅ Initialize app before using it
@@ -36,6 +36,7 @@ app.use('/api/auth', router);
 app.use('/api/upload/', uploadRouter);
 app.use('/api/user',userRouter);
 app.use('/api/post',postRouter);
+app.use('/api/comment',commentRouter);
 
 const PORT = process.env.PORT || 3000;
 

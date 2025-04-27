@@ -19,8 +19,12 @@ const DashPosts = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `/api/post/getposts?userId=${currentUser._id}&startIndex=${start}&limit=${limit}`
+        `http://localhost:3000/api/post/getposts?userId=${currentUser._id}&startIndex=${start}&limit=${limit}`,
+        {
+          credentials: 'include',
+        }
       );
+      
       const data = await res.json();
 
       if (!res.ok) {
@@ -64,12 +68,13 @@ const DashPosts = () => {
     setShowModal(false);
     try {
       const res = await fetch(
-        `/api/post/deletepost/${postIdToDelete}/${currentUser._id}`,
+        `http://localhost:3000/api/post/deletepost/${postIdToDelete}/${currentUser._id}`,
         {
           method: 'DELETE',
           credentials: 'include',
         }
       );
+      
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || 'Failed to delete post');

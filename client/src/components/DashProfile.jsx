@@ -12,7 +12,7 @@ export default function DashProfile() {
   const { currentUser,error,loading} = useSelector((state) => state.user);
   console.log('👤 currentUser:', currentUser);
   const [imageFile, setImageFile] = useState(null);
-  const [UpdaeUserLoading, setUpdateUserLoading] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
@@ -152,23 +152,24 @@ const handleDeleteUser = async () => {
    }
 }
 
-  const handleSignout = async () => {
-    try{
-      const res=await fetch('api/user/signout',{
-        method: 'POST',
-        credentials: 'include',
-      });
-      const data=await res.json();
-      if(!res.ok){
-        console.log(data.message);
-      }else{
-        dispatch(signoutSuccess(data));
-        
-      }
-    }catch(error){
-      console.error('Error signing out:', error);
+const handleSignout = async () => {
+  try {
+    const res = await fetch('http://localhost:3000/api/user/signout', { // ✅ Correct
+      method: 'POST',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      console.log(data.message);
+    } else {
+      dispatch(signoutSuccess(data));
     }
+  } catch (error) {
+    console.error('Error signing out:', error);
   }
+};
+
+
 
   return (
     <div className="h-screen max-w-lg mx-auto p-3 w-full">
