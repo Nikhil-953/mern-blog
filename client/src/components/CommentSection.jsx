@@ -1,13 +1,16 @@
 import { Alert, Button, Textarea, TextInput } from 'flowbite-react';
 import React, { use, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 import Comment from './Comment';
+
+
 export default function CommentSection({ postId }) {
   const { currentUser } = useSelector((state) => state.user);
   const [comment, setComment] = useState('');
   const [commentError, setCommentError] = useState(null); // State to track comment error
   const [comments, setComments] = useState([]); // State to track comments
+ const navigate = useNavigate(); // Hook to navigate programmatically
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,25 +42,54 @@ const handleSubmit = async (e) => {
   
 }
 
+// Update your initial comments fetch to include proper like data
 useEffect(() => {
-   const getComments = async () => {
-    try {
-      const res = await fetch(`http://localhost:3000/api/comment/getPostcomments/${postId}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setComments(data.comments); // Set comments if fetch is successful
-      } else {
-        setCommentError(data.message); // Set error message if fetch fails
+  const getComments = async () => {
+      try {
+          const res = await fetch(`/api/comment/getPostcomments/${postId}`);
+          if (res.ok) {
+              const data = await res.json();
+              setComments(data.comments.map(comment => ({
+                  ...comment,
+                  // Ensure we have both likes array and numberOfLikes
+                  likes: comment.likes || [],
+                  numberOfLikes: comment.numberOfLikes || comment.likes?.length || 0
+              })));
+          }
+      } catch (error) {
+          console.error('Failed to fetch comments:', error);
       }
-    } catch (error) {
-      setCommentError(error.message); // Set error message if fetch fails
-    }
-   }
-   getComments();
-}, [postId])
+  };
+  getComments();
+}, [postId]);
+
+const handleLike = async (commentId) => {
+  try {
+      if (!currentUser) {
+          navigate('/sign-in');
+          return;
+      }
+      
+      const res = await fetch(`/api/comment/likeComment/${commentId}`, {
+          method: 'PUT',
+          credentials: 'include',
+      });
+      
+      if (res.ok) {
+          const data = await res.json();
+          setComments(comments.map(comment => 
+              comment._id === commentId ? {
+                  ...comment,
+                  likes: data.likes,
+                  numberOfLikes: data.numberOfLikes
+              } : comment
+          ));
+      }
+  } catch (error) {
+      console.error('Like error:', error);
+      // You might want to show an error toast here
+  }
+};
 
   return (
     <div className="border-t mt-6 pt-4">
@@ -133,7 +165,7 @@ useEffect(() => {
           {
             comments.map(comment => (
               <Comment
-                key={comment._id} comment={comment}
+                key={comment._id} comment={comment} onLike={handleLike}
               />
             ))
           }

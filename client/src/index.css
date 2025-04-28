@@ -47,5 +47,7 @@ html, body, #root {
   }
   
   
-  
+  .custom-like-button button:hover {
+    color: #3b82f6!important; /* red-500 */
+  }  
   
