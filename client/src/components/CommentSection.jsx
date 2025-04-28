@@ -91,6 +91,27 @@ const handleLike = async (commentId) => {
   }
 };
 
+// In CommentSection.jsx
+const handleEdit = async (commentId, editedContent) => {
+  try {
+      const res = await fetch(`http://localhost:3000/api/comment/editComment/${commentId}`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content: editedContent }),
+      });
+      
+      if (res.ok) {
+          setComments(comments.map(c => 
+              c._id === commentId ? { ...c, content: editedContent } : c
+          ));
+      }
+  } catch (error) {
+      console.error('Edit error:', error);
+  }
+};
   return (
     <div className="border-t mt-6 pt-4">
       {currentUser ? (
@@ -165,7 +186,7 @@ const handleLike = async (commentId) => {
           {
             comments.map(comment => (
               <Comment
-                key={comment._id} comment={comment} onLike={handleLike}
+                key={comment._id} comment={comment} onLike={handleLike} onEdit={handleEdit}
               />
             ))
           }
