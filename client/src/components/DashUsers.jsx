@@ -18,7 +18,10 @@ const DashUsers = () => {
   const fetchUsers = async (append = false, start = startIndex) => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:3000/api/user/getusers`);
+      const res = await fetch(`http://localhost:3000/api/user/getusers`, {
+        credentials: 'include', // Include cookie-based auth (important!)
+      });
+      
       const data = await res.json();
 
       if (!res.ok) {
@@ -62,7 +65,7 @@ const DashUsers = () => {
     try{
         const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
             method: 'DELETE',
-            
+            credentials: 'include',
         });
         const data = await res.json();
     

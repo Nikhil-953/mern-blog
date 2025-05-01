@@ -47,20 +47,25 @@ const handleSubmit = async (e) => {
 // Update your initial comments fetch to include proper like data
 useEffect(() => {
   const getComments = async () => {
-      try {
-          const res = await fetch(`/api/comment/getPostcomments/${postId}`);
-          if (res.ok) {
-              const data = await res.json();
-              setComments(data.comments.map(comment => ({
-                  ...comment,
-                  // Ensure we have both likes array and numberOfLikes
-                  likes: comment.likes || [],
-                  numberOfLikes: comment.numberOfLikes || comment.likes?.length || 0
-              })));
-          }
-      } catch (error) {
-          console.error('Failed to fetch comments:', error);
+    try {
+      const res = await fetch(`http://localhost:3000/api/comment/getPostcomments/${postId}`, {
+        credentials: 'include' // Needed if using cookies
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Failed to fetch: ${res.status}`);
       }
+      
+      const data = await res.json();
+      setComments(data.comments.map(comment => ({
+        ...comment,
+        likes: comment.likes || [],
+        numberOfLikes: comment.numberOfLikes || comment.likes?.length || 0
+      })));
+    } catch (error) {
+      console.error('Comment fetch error:', error);
+      setComments([]); // Prevent rendering errors
+    }
   };
   getComments();
 }, [postId]);
