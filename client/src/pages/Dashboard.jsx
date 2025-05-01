@@ -4,6 +4,8 @@ import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import DashPosts from '../components/DashPosts';
 import DashUsers from '../components/DashUsers';
+import DashComments from '../components/DashComments'; // Adjust path as needed
+
 const Dashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,6 +37,9 @@ const Dashboard = () => {
         {tab === 'profile' && <DashProfile />}
         {tab === 'posts' && <DashPosts />}
         {tab === 'users' && <DashUsers />} {/* Default to posts if no tab is selected */}
+
+        {/* comments */}
+         {tab === 'comments' && <DashComments/>}
       </div>
     </div>
   );

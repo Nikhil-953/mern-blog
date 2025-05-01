@@ -1,6 +1,6 @@
 import { Sidebar } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
-import { HiArrowSmRight, HiDocumentText, HiUser } from 'react-icons/hi';
+import { HiAnnotation, HiArrowSmRight, HiDocumentText, HiUser } from 'react-icons/hi';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { signoutSuccess } from '../redux/user/userSlice';
@@ -74,11 +74,19 @@ export default function DashSidebar() {
 
           {currentUser.isAdmin && (
             <div className="mt-4"> {/* This adds the gap */}
-              <Link to="/dashboard?tab=users">
+             <>
+             <Link to="/dashboard?tab=users">
               <Sidebar.Item active={tab === 'users'} icon={HiOutlineUserGroup} as="div">
                   Users
                 </Sidebar.Item>
               </Link>
+
+              <Link to="/dashboard?tab=comments">
+              <Sidebar.Item active={tab === 'comments'} icon={HiAnnotation} as="div">
+                  Comments
+                </Sidebar.Item>
+              </Link>
+             </>
             </div>
           )}
 

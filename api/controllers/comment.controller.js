@@ -102,3 +102,22 @@ export const deleteComment = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// Add to your comment controller (comment.controller.js)
+export const getAllComments = async (req, res, next) => {
+    try {
+      if (!req.user.isAdmin) {
+        return res.status(403).json({ message: 'Not authorized' });
+      }
+      
+      const comments = await Comment.find()
+        .sort({ createdAt: -1 })
+        .limit(req.query.limit || 10)
+        .skip(req.query.skip || 0);
+        
+      res.status(200).json({ comments });
+    } catch (error) {
+      next(error);
+    }
+  };
