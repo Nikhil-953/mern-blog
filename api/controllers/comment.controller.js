@@ -107,17 +107,34 @@ export const deleteComment = async (req, res, next) => {
 // Add to your comment controller (comment.controller.js)
 export const getAllComments = async (req, res, next) => {
     try {
-      if (!req.user.isAdmin) {
-        return res.status(403).json({ message: 'Not authorized' });
-      }
-      
-      const comments = await Comment.find()
-        .sort({ createdAt: -1 })
-        .limit(req.query.limit || 10)
-        .skip(req.query.skip || 0);
+        if (!req.user.isAdmin) {
+            return res.status(403).json({ message: 'Not authorized' });
+        }
         
-      res.status(200).json({ comments });
+        const comments = await Comment.find()
+            .sort({ createdAt: -1 })
+            .limit(req.query.limit || 10)
+            .skip(req.query.skip || 0);
+            
+        const totalComments = await Comment.countDocuments();
+        
+        const now = new Date();
+        const oneMonthAgo = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            now.getDate()
+        );
+        
+        const lastMonthComments = await Comment.countDocuments({
+            createdAt: { $gte: oneMonthAgo },
+        });
+        
+        res.status(200).json({ 
+            comments,
+            totalComments,
+            lastMonthComments
+        });
     } catch (error) {
-      next(error);
+        next(error);
     }
-  };
+};
