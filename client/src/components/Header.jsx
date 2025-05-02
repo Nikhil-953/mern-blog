@@ -1,18 +1,30 @@
 import { Button, Navbar, Dropdown, TextInput, Avatar } from "flowbite-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import "flowbite/dist/flowbite.min.css";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
 import { signoutSuccess } from "../redux/user/userSlice";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const Header = () => {
   const path = useLocation().pathname;
+  const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user || {});
   const { theme } = useSelector((state) => state.theme);
-
+  const [searchTerm, setSearchTerm] = useState('')
+  
+useEffect(() =>{
+  const urlParams = new URLSearchParams(location.search);
+  const searchTermFromUrl = urlParams.get('searchTerm')
+  if(searchTermFromUrl){
+    setSearchTerm(searchTermFromUrl)
+  }
+}, [location.search])
 
   const handleSignout = async () => {
       try{
@@ -31,6 +43,13 @@ const Header = () => {
         console.error('Error signing out:', error);
       }
     }
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('searchTerm',searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  }
     
   return (
     <Navbar
@@ -58,7 +77,7 @@ const Header = () => {
   <Navbar.Toggle />
 
   {/* Middle Section with Search (Hidden in mobile) */}
-  <form className="hidden lg:flex">
+  <form onSubmit={handleSubmit} className="hidden lg:flex">
     <TextInput
       type="text"
       placeholder="Search..."
@@ -68,6 +87,8 @@ const Header = () => {
           ? "bg-gray-800 text-white"
           : "bg-gray-100 text-black"
       }`}
+      value={searchTerm}
+      onChange={(e)=> setSearchTerm(e.target.value)}
     />
   </form>
 
